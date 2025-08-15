@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The microScript 2.0 Ebook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto+Mono&display=swap');
+
+        body {
+            font-family: 'Merriweather', serif;
+            background-color: #fdf6e3; /* Solarized Light */
+            color: #000000; /* Solid Black for better contrast */
+        }
+
+        #ebook-container {
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            max-height: 1000px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .page-content {
+            line-height: 1.8;
+        }
+
+        .page-content h1, .page-content h2 {
+            font-family: 'Merriweather', serif;
+            border-bottom: 1px solid #eee8d5;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .page-content h1 {
+            color: #268bd2; /* Solarized Blue */
+        }
+
+        .page-content h2 {
+            color: #859900; /* Solarized Green */
+        }
+
+        .page-content code {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #eee8d5; /* Solarized Base2 */
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #586e75; /* Slightly softer color for code blocks */
+        }
+
+        .page-content pre {
+            background-color: #fdf6e3;
+            border: 1px solid #eee8d5;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .page-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #657b83;
+            border: 1px solid #93a1a1;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .nav-button:hover {
+            background-color: #fff;
+            color: #073642;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        #prev-page { left: 1rem; }
+        #next-page { right: 1rem; }
+
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="ebook-container" class="relative bg-white rounded-lg p-10 md:p-16 flex flex-col">
+        <div id="page-content-container" class="flex-grow overflow-y-auto">
+            <!-- Page content will be injected here -->
+        </div>
+        <div id="page-number" class="text-center text-sm text-gray-400 mt-8 pt-4 border-t border-gray-200"></div>
+
+        <button id="prev-page" class="nav-button flex items-center justify-center" onclick="changePage(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="next-page" class="nav-button flex items-center justify-center" onclick="changePage(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script>
+        // Using string concatenation to avoid potential parsing issues with template literals in some environments.
+        const pages = [
+            // Page 1: Title
+            '<div class="flex flex-col items-center justify-center h-full text-center">' +
+                '<h1 class="text-5xl font-bold">The microScript 2.0 Ebook</h1>' +
+                '<p class="mt-4 text-xl text-gray-500">A Beginner\'s Guide to Game Development</p>' +
+                '<p class="mt-12 text-lg">Click the right arrow to begin.</p>' +
+            '</div>',
+            // Page 2: Introduction
+            '<div class="page-content">' +
+                '<h1>Welcome!</h1>' +
+                '<p>This book is your guide to learning microScript 2.0, the simple yet powerful language behind the microStudio game engine. We\'ll start from the very beginning and build up the skills you need to create your own 2D games.</p>' +
+                '<p class="mt-4">You don\'t need any prior coding experience. We\'ll cover everything step-by-step. The key is to experiment! Type out the code examples yourself and see what happens when you change them.</p>' +
+                '<h2 class="mt-8">What is microStudio?</h2>' +
+                '<p>microStudio is an all-in-one game engine that runs in your browser. It includes everything you need: a code editor, a sprite (art) editor, a map editor, and more. microScript is its native language, designed to be easy to learn and fun to use.</p>' +
+            '</div>',
+            // Page 3: The Game Loop
+            '<div class="page-content">' +
+                '<h1>The Game Loop</h1>' +
+                '<p>Every game, from simple arcade classics to massive open-world adventures, runs on a concept called the <strong>Game Loop</strong>. It\'s a process that repeats over and over, very quickly.</p>' +
+                '<p class="mt-4">In microStudio, this loop is broken into three main functions:</p>' +
+                '<ul class="list-disc list-inside mt-4 space-y-2">' +
+                    '<li><code>init()</code>: This runs <strong>once</strong> when your game starts. It\'s for setting everything up.</li>' +
+                    '<li><code>update()</code>: This runs <strong>60 times per second</strong>. It\'s the brain of your game, handling logic, input, and movement.</li>' +
+                    '<li><code>draw()</code>: This also runs <strong>60 times per second</strong>, right after <code>update()</code>. Its only job is to draw everything on the screen.</li>' +
+                '</ul>' +
+                '<pre><code>// This is the basic structure of every microStudio game.\n' +
+'init = function()\n' +
+'  // Setup code goes here\n' +
+'end\n\n' +
+'update = function()\n' +
+'  // Game logic goes here\n' +
+'end\n\n' +
+'draw = function()\n' +
+'  // Drawing code goes here\n' +
+'end</code></pre>' +
+            '</div>',
+            // Page 4: Variables
+            '<div class="page-content">' +
+                '<h1>Variables: Storing Information</h1>' +
+                '<p>A <strong>variable</strong> is like a labeled box where you can store information. This information can be a number, text, or something more complex. The value in the box can change as your game runs.</p>' +
+                '<p class="mt-4">You create a variable by giving it a name and assigning it a value with the <code>=</code> sign.</p>' +
+                '<pre><code>init = function()\n' +
+'  // Create a variable to store the player\'s health\n' +
+'  player_health = 100\n\n' +
+'  // Create variables for the player\'s position\n' +
+'  player_x = 0\n' +
+'  player_y = 50\n' +
+'  \n' +
+'  // Create a variable for a name (text is called a "string")\n' +
+'  player_name = "Hero"\n' +
+'end</code></pre>' +
+                '<p class="mt-4">Now, you can use the variable\'s name to access its value anywhere in your code. The names are up to you, but it\'s best to make them descriptive!</p>' +
+            '</div>',
+            // Page 5: Drawing
+            '<div class="page-content">' +
+                '<h1>Drawing on the Screen</h1>' +
+                '<p>All drawing code goes inside the <code>draw()</code> function. The screen in microStudio uses a coordinate system where <code>(0, 0)</code> is the center.</p>' +
+                '<ul class="list-disc list-inside mt-4 space-y-2">' +
+                    '<li>The <strong>X-axis</strong> runs horizontally (left is negative, right is positive).</li>' +
+                    '<li>The <strong>Y-axis</strong> runs vertically (down is negative, up is positive).</li>' +
+                '</ul>' +
+                '<h2 class="mt-8">Drawing Shapes and Sprites</h2>' +
+                '<p>You can draw simple shapes or use images called "sprites".</p>' +
+                '<pre><code>draw = function()\n' +
+'  // Clear the screen with a black color\n' +
+'  screen.clear("rgb(0,0,0)")\n\n' +
+'  // Draw a red rectangle at (0,0) with a size of 40x40\n' +
+'  screen.fillRect(0, 0, 40, 40, "red")\n\n' +
+'  // Draw a sprite named "player" at our player\'s position\n' +
+'  // (assuming we created player_x and player_y variables)\n' +
+'  screen.drawSprite("player", player_x, player_y, 50)\n' +
+'end</code></pre>' +
+            '</div>',
+            // Page 6: Handling Input
+            '<div class="page-content">' +
+                '<h1>Handling Input</h1>' +
+                '<p>Making games interactive means responding to player input. In microStudio, this is done inside the <code>update()</code> function by checking the built-in <code>keyboard</code> object.</p>' +
+                '<h2 class="mt-8">Conditional Logic: `if` Statements</h2>' +
+                '<p>An <code>if</code> statement checks if a condition is true. If it is, the code inside it runs. This is the key to handling input.</p>' +
+                '<pre><code>update = function()\n' +
+'  // Define a speed for our player\n' +
+'  speed = 2\n\n' +
+'  // Check if the right arrow key is being held down\n' +
+'  if keyboard.RIGHT then\n' +
+'    // If it is, move the player to the right\n' +
+'    player_x = player_x + speed\n' +
+'  end\n\n' +
+'  // Check for the left arrow key\n' +
+'  if keyboard.LEFT then\n' +
+'    player_x = player_x - speed\n' +
+'  end\n' +
+'end</code></pre>' +
+                '<p class="mt-4">You can check any key this way, like <code>keyboard.UP</code>, <code>keyboard.DOWN</code>, or letter keys like <code>keyboard.A</code>.</p>' +
+            '</div>',
+             // Page 7: A Full Player Controller
+            '<div class="page-content">' +
+                '<h1>Putting It Together: A Player Controller</h1>' +
+                '<p>Let\'s combine variables, drawing, and input to make a complete, movable character.</p>' +
+                '<pre><code>init = function()\n' +
+'  // Player\'s starting position and speed\n' +
+'  player_x = 0\n' +
+'  player_y = 0\n' +
+'  player_speed = 3\n' +
+'end\n\n' +
+'update = function()\n' +
+'  // Handle movement\n' +
+'  if keyboard.LEFT then\n' +
+'    player_x = player_x - player_speed\n' +
+'  end\n' +
+'  if keyboard.RIGHT then\n' +
+'    player_x = player_x + player_speed\n' +
+'  end\n' +
+'  if keyboard.UP then\n' +
+'    player_y = player_y + player_speed\n' +
+'  end\n' +
+'  if keyboard.DOWN then\n' +
+'    player_y = player_y - player_speed\n' +
+'  end\n' +
+'end\n\n' +
+'draw = function()\n' +
+'  screen.clear("rgb(20,20,40)") // A dark blue background\n' +
+'  \n' +
+'  // Go to the Sprites tab and create a sprite named "player"\n' +
+'  screen.drawSprite("player", player_x, player_y, 40)\n' +
+'end</code></pre>' +
+                '<p class="mt-4">With this code, you have a character that can move freely around the screen! This is the foundation of most 2D games.</p>' +
+            '</div>',
+            // Page 8: Collisions
+            '<div class="page-content">' +
+                '<h1>Collisions and Logic</h1>' +
+                '<p>Games need rules. What happens when the player touches an enemy? Or a coin? This is handled with collision detection.</p>' +
+                '<p class="mt-4">A simple way to check for collisions is to measure the distance between two objects.</p>' +
+                '<pre><code>// Let\'s assume we have a coin at (coin_x, coin_y)\n' +
+'// This code goes inside the update() function\n\n' +
+'// Calculate the distance on X and Y axes\n' +
+'dist_x = player_x - coin_x\n' +
+'dist_y = player_y - coin_y\n\n' +
+'// Use Pythagorean theorem to get the actual distance\n' +
+'distance = sqrt(dist_x*dist_x + dist_y*dist_y)\n\n' +
+'// If the distance is less than a certain amount, they are colliding\n' +
+'if distance &lt; 30 then\n' +
+'  print("Coin collected!")\n' +
+'  // Here you would add to the score and move the coin\n' +
+'end</code></pre>' +
+                '<p class="mt-4">This logic allows your game objects to interact with each other, creating gameplay.</p>' +
+            '</div>',
+            // Page 9: Next Steps
+            '<div class="page-content">' +
+                '<h1>Where to Go From Here</h1>' +
+                '<p>You now have the fundamental building blocks of game development in microScript 2.0:</p>' +
+                '<ul class="list-disc list-inside mt-4 space-y-2">' +
+                    '<li>The Game Loop (<code>init</code>, <code>update</code>, <code>draw</code>)</li>' +
+                    '<li>Storing data with <code>Variables</code></li>' +
+                    '<li>Drawing <code>Sprites</code></li>' +
+                    '<li>Handling <code>Input</code></li>' +
+                    '<li>Creating rules with <code>If Statements</code> and collision logic</li>' +
+                '</ul>' +
+                '<h2 class="mt-8">Your First Challenge</h2>' +
+                '<p>Try to build a complete mini-game: "Collect the Coins".</p>' +
+                '<ol class="list-decimal list-inside mt-4 space-y-2">' +
+                    '<li>Create a player you can move around.</li>' +
+                    '<li>Create a coin sprite.</li>' +
+                    '<li>When the player touches the coin, increase a <code>score</code> variable.</li>' +
+                    '<li>Move the coin to a new random position.</li>' +
+                    '<li>Display the score on the screen using <code>screen.drawText("Score: " + score, -150, 90, 20)</code>.</li>' +
+                '</ol>' +
+                '<p class="mt-6">The best way to learn is by building. Explore, experiment, and have fun!</p>' +
+            '</div>',
+            // Page 10: The End
+            '<div class="flex flex-col items-center justify-center h-full text-center">' +
+                '<h1 class="text-5xl font-bold">The End</h1>' +
+                '<p class="mt-4 text-xl text-gray-500">Happy Coding!</p>' +
+            '</div>'
+        ];
+
+        let currentPage = 0;
+        const pageContentContainer = document.getElementById('page-content-container');
+        const pageNumberDisplay = document.getElementById('page-number');
+        const prevButton = document.getElementById('prev-page');
+        const nextButton = document.getElementById('next-page');
+
+        function displayPage(pageIndex) {
+            pageContentContainer.innerHTML = pages[pageIndex];
+            pageNumberDisplay.textContent = 'Page ' + (pageIndex + 1) + ' of ' + pages.length;
+            
+            // Update button states
+            prevButton.disabled = pageIndex === 0;
+            nextButton.disabled = pageIndex === pages.length - 1;
+        }
+
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            if (newPage >= 0 && newPage < pages.length) {
+                currentPage = newPage;
+                displayPage(currentPage);
+            }
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                changePage(-1);
+            } else if (event.key === 'ArrowRight') {
+                changePage(1);
+            }
+        });
+
+        // Initial page load
+        displayPage(currentPage);
+    </script>
+</body>
+</html>
